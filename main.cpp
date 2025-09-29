@@ -1,26 +1,26 @@
 #include <iostream>
-#include <wiringPi.h>
-
-using namespace std;
-
-void startWiringPi()
-{
-    if (wiringPiSetup() == -1) {
-        std::cerr << "Ошибка инициализации WiringPi." << std::endl;
-        return;
-    }
-}
+#include "hx711/common.h"
 
 int main()
 {
-    startWiringPi();
+    /*startWiringPi();
+
     pinMode(5, INPUT);
     pullUpDnControl(5, PUD_DOWN);
 
     while (true) {
         if (digitalRead(5) == HIGH)
             std::cout << "active" << std::endl;
-    }
-    cout << "Hello World!" << endl;
+    }*/
+
+    using namespace HX711;
+    using std::chrono::seconds;
+
+    AdvancedHX711 hx(2, 3, -370, -367471, Rate::HZ_80);
+
+    // constantly output weights using the median of all samples
+    // obtained within 1 second
+    for(;;) std::cout << hx.weight(seconds(1)) << std::endl; //eg. 0.03 g
+
     return 0;
 }
